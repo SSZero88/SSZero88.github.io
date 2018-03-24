@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="samplestyle.css">
+    <meta charset="UTF-8">
+    <title>Experience Bar Sample</title>
+</head>
+<body>
+<div><progress id="xpbar" data-label="0 / 0" value="0" max="100" class="xp"></progress></div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        // init xp bar
+        getExperienceAndUpdateXpBar();
+
+        // every 5 seconds, query the party experience,
+        // and update the bar
+        window.setInterval(function(){
+            getExperienceAndUpdateXpBar();
+        }, 5000);
+    });
+
+    /**
+     * Sends an AJAX request to the nstp service to get xp,
+     * and then updates the xp progress bar
+     */
+    function getExperienceAndUpdateXpBar(){
+        console.log("it works!");
+        $.ajax({
+            url: "http://nstpservice.y5es7p7tk9.us-east-1.elasticbeanstalk.com/party/experience",
+            success: function(result){
+                console.log(result);
+                updateProgressBar(result);
+            }
+        });
+    }
+
+    /**
+     * Updates the progress bar
+     * @param party
+     */
+    function updateProgressBar(party){
+        var prev = party.prev_xp;
+        var current = party.current_xp;
+        var next = party.next_xp;
+        var level = party.level;
+        var percent = party.percent;
+        $("#xpbar").attr("data-label", current+" / "+next)
+        $("#xpbar").val(percent);
+    }
+
+</script>
+</html>
